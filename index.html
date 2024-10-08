@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Log Monitoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sidebar h1 {
+            color: #fff;
+            margin-bottom: 40px;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .sidebar a {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 18px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #ecf0f1;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table th, .log-table td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        .log-table th {
+            background-color: #34495e;
+            color: #fff;
+        }
+
+        .log-table tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+
+        .log-table tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        .log-level-info {
+            color: #2980b9;
+        }
+
+        .log-level-warning {
+            color: #f39c12;
+        }
+
+        .log-level-error {
+            color: #e74c3c;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-running {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+
+        .status-stopped {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>Service Monitor</h1>
+            <a href="#">Dashboard</a>
+            <a href="#">Logs</a>
+            <a href="#">Settings</a>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h2>Service Logs</h2>
+                <span class="status status-running">Running</span>
+            </div>
+
+            <table class="log-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Service</th>
+                        <th>Log Level</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-10-08 14:32:01</td>
+                        <td>API Service</td>
+                        <td class="log-level-info">INFO</td>
+                        <td>Service started successfully.</td>
+                    </tr>
+                    <tr>
+                        <td>2024-10-08 14:35:22</td>
+                        <td>Auth Service</td>
+                        <td class="log-level-warning">WARNING</td>
+                        <td>Token validation slow response.</td>
+                    </tr>
+                    <tr>
+                        <td>2024-10-08 14:40:03</td>
+                        <td>Database</td>
+                        <td class="log-level-error">ERROR</td>
+                        <td>Failed to connect to database.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
