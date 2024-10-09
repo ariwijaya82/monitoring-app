@@ -3,29 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Platform v5 Monitoring App</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ripple-ui@latest/ripple-ui.min.css">
+    <title>Service Log Monitoring</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(145deg, #1e1e2d, #181824);
             color: #fff;
         }
+
         .container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar styles */
+        /* Sidebar with glass effect */
         .sidebar {
             width: 240px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             border-radius: 10px;
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             margin-right: 20px;
         }
 
@@ -33,24 +41,21 @@
             color: #eaeaea;
             margin-bottom: 50px;
             font-weight: 600;
-            font-size: 24px;
-            letter-spacing: 1px;
+            font-size: 26px;
         }
 
         .sidebar a {
             color: #bdc3c7;
-            font-size: 18px;
-            margin-bottom: 15px;
             text-decoration: none;
-            transition: color 0.3s;
-            padding: 10px;
-            border-radius: 8px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            transition: color 0.3s, transform 0.3s;
+            cursor: pointer;
         }
 
-        .sidebar a.active {
-            background: rgba(255, 255, 255, 0.2);
+        .sidebar a:hover {
             color: #fff;
-            font-weight: 600;
+            transform: scale(1.05);
         }
 
         .content {
@@ -58,20 +63,6 @@
             padding: 40px;
         }
 
-        /* Card style for chart boxes */
-        .chart-box {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(31, 38, 135, 0.37);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-        }
-
-        /* Header and Status */
         .header {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -86,6 +77,7 @@
 
         .header h2 {
             font-size: 26px;
+            font-weight: 600;
             color: #eaeaea;
         }
 
@@ -97,28 +89,147 @@
             font-weight: 600;
             background-color: #27ae60;
             color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        /* Styles for Ripple UI tabs */
-        .rpl-tab {
-            color: #fff;
+        /* Chart Container with hover effect */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .chart-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(31, 38, 135, 0.37);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+            transition: transform 0.3s;
+        }
+
+        .chart-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .chart-title {
             font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #eaeaea;
         }
 
-        .rpl-tab.active {
-            background-color: rgba(255, 255, 255, 0.2);
+        /* Log Table */
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 8px rgba(31, 38, 135, 0.37);
+            overflow: hidden;
+        }
+
+        .log-table th, .log-table td {
+            padding: 16px;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .log-table th {
+            background-color: #1e1e2d;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .log-table tr {
+            transition: background 0.3s;
+        }
+
+        .log-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .log-level-info {
+            color: #3498db;
+        }
+
+        .log-level-warning {
+            color: #f39c12;
+        }
+
+        .log-level-error {
+            color: #e74c3c;
+        }
+
+        /* Settings form styles */
+        .settings-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(31, 38, 135, 0.37);
+        }
+
+        .settings-content h3 {
+            color: #eaeaea;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .settings-content p {
+            color: #bdbdbd;
+            margin-bottom: 20px;
+        }
+
+        .settings-content input, .settings-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background-color: #2c2c38;
+            border: none;
+            color: #fff;
+            outline: none;
+        }
+
+        .settings-content button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            background-color: #27ae60;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .settings-content button:hover {
+            background-color: #2ecc71;
+        }
+
+        /* Hidden content sections initially */
+        .section {
+            display: none;
+        }
+
+        .active {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
-            <h1>Smart Platform<span style="font-size:18px; display:block; margin-top:5px;">v5 Monitoring App</span></h1>
-            <a class="rpl-tab" onclick="showSection('dashboard')">Dashboard</a>
-            <a class="rpl-tab" onclick="showSection('logs')">Logs</a>
-            <a class="rpl-tab" onclick="showSection('settings')">Settings</a>
+            <h1>Service Monitor</h1>
+            <a onclick="showSection('dashboard')">Dashboard</a>
+            <a onclick="showSection('logs')">Logs</a>
+            <a onclick="showSection('settings')">Settings</a>
         </div>
-
         <div class="content">
             <!-- Dashboard Section -->
             <div id="dashboard" class="section active">
@@ -126,16 +237,23 @@
                     <h2>Dashboard Overview</h2>
                     <span class="status">Running</span>
                 </div>
-                <div class="rpl-card">
-                    <h3 class="rpl-card-title">CPU Usage</h3>
-                    <div class="rpl-card-content">
-                        <!-- CPU Chart -->
+
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <div class="chart-title">CPU Usage</div>
+                        <!-- Placeholder for CPU usage chart -->
                     </div>
-                </div>
-                <div class="rpl-card">
-                    <h3 class="rpl-card-title">Memory Usage</h3>
-                    <div class="rpl-card-content">
-                        <!-- Memory Chart -->
+                    <div class="chart-box">
+                        <div class="chart-title">Memory Usage</div>
+                        <!-- Placeholder for Memory usage chart -->
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Network Traffic</div>
+                        <!-- Placeholder for Network Traffic chart -->
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Error Rate</div>
+                        <!-- Placeholder for Error Rate chart -->
                     </div>
                 </div>
             </div>
@@ -146,7 +264,8 @@
                     <h2>Service Logs</h2>
                     <span class="status">Running</span>
                 </div>
-                <table class="rpl-table">
+
+                <table class="log-table">
                     <thead>
                         <tr>
                             <th>Timestamp</th>
@@ -168,6 +287,12 @@
                             <td class="log-level-warning">WARNING</td>
                             <td>Token validation slow response.</td>
                         </tr>
+                        <tr>
+                            <td>2024-10-08 14:40:03</td>
+                            <td>Database</td>
+                            <td class="log-level-error">ERROR</td>
+                            <td>Failed to connect to database.</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -177,20 +302,32 @@
                 <div class="header">
                     <h2>Settings</h2>
                 </div>
-                <div class="rpl-card">
-                    <h3 class="rpl-card-title">Application Settings</h3>
-                    <input class="rpl-input" type="number" placeholder="Monitoring Interval (seconds)">
-                    <select class="rpl-select">
-                        <option>Log Retention: 1 Week</option>
-                        <option>Log Retention: 2 Weeks</option>
+
+                <div class="settings-content">
+                    <h3>Application Settings</h3>
+                    <p>Adjust monitoring intervals, log retention, alert preferences, etc.</p>
+
+                    <input type="number" placeholder="Monitoring Interval (seconds)">
+                    <select>
+                        <option value="1">Log Retention: 1 Week</option>
+                        <option value="2">Log Retention: 2 Weeks</option>
+                        <option value="4">Log Retention: 4 Weeks</option>
                     </select>
+
+                    <h3>Notifications</h3>
+                    <p>Configure email or SMS alerts for specific log levels like ERROR or WARNING.</p>
+
+                    <input type="email" placeholder="Notification Email">
+                    <input type="text" placeholder="SMS Phone Number">
+
+                    <button>Save Settings</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to switch between sections
+        // Function to toggle sections based on the sidebar click
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
@@ -198,13 +335,6 @@
             });
             // Show the selected section
             document.getElementById(sectionId).classList.add('active');
-
-            // Remove active class from all tabs
-            document.querySelectorAll('.sidebar a').forEach(link => {
-                link.classList.remove('active');
-            });
-            // Add active class to clicked tab
-            document.querySelector(`.sidebar a[onclick="showSection('${sectionId}')"]`).classList.add('active');
         }
     </script>
 </body>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import StoreProvider from "./StoreProvider";
+import Sidebar from "@/components/Sidebar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,9 +28,34 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blackInverted`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-backgroundPrimary`}
       >
-        {children}
+        <div className="flex flex-row sm:gap-2">
+          <div className="sm:w-full sm:max-w-[18rem]">
+            <input
+              type="checkbox"
+              id="sidebar-mobile-fixed"
+              className="sidebar-state"
+            />
+            <label
+              htmlFor="sidebar-mobile-fixed"
+              className="sidebar-overlay"
+            ></label>
+            <Sidebar />
+          </div>
+          <div className="flex w-full flex-col p-4">
+            <div className="w-fit">
+              <label
+                htmlFor="sidebar-mobile-fixed"
+                className="btn-primary btn sm:hidden"
+              >
+                Open Sidebar
+              </label>
+            </div>
+
+            <StoreProvider>{children}</StoreProvider>
+          </div>
+        </div>
       </body>
     </html>
   );
