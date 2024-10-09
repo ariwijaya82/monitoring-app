@@ -16,16 +16,58 @@ export default function SettingsPage() {
   };
   const [settingData, setSettingData] = useState<ISettingData | null>(null);
 
+  const fetchData = async (url: string, user: string, pass: string) => {
+    try {
+      const response = await axios.get(`${url}/queues`, {
+        auth: {
+          username: user,
+          password: pass,
+        },
+      });
+  
+      const queues = response.data;
+  
+      // Get consumers information
+      const consumersResponse = await axios.get(`${url}/consumers`, {
+        auth: {
+          username: user,
+          password: pass,
+        },
+      });
+  
+      const consumers = consumersResponse.data;
+  
+      // Combine queue data with consumers
+      const queueData = queues.map((queue: any) => {
+        const queueConsumers = consumers.filter((consumer: any) => consumer.queue === queue.name);
+        return {
+          name: queue.name,
+          consumerCount: queueConsumers.length,
+          consumers: queueConsumers.map((consumer: any) => ({
+            ip: consumer.client_properties && consumer.client_properties.connection_name,
+            user: consumer.user,
+          })),
+        };
+      });
+  
+      return queueData
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     const data_string = localStorage.getItem("setting_parameter");
     if (!data_string) return;
 
     const data: ISettingData = JSON.parse(data_string);
     setSettingData(data);
+    const result = fetchData(data.rabbitmq.host, data.rabbitmq.user, data.rabbitmq.pass)
+    console.log(result)
   }, []);
 
   useEffect(() => {
-    axios.get(`https:`);
+    // axios.get(`https:`);
   });
 
   return (
@@ -42,119 +84,17 @@ export default function SettingsPage() {
           <div className="card-body">
             <h3 className="card-header text-white">RabbitMQ</h3>
             <div className="mb-4">
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="sr-only" htmlFor="host">
-                      Host
-                    </label>
-                    <input
-                      className="input input-solid max-w-full"
-                      placeholder="Host"
-                      type="text"
-                      id="host"
-                      onChange={(e) =>
-                        onChangeParameter("host", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="sr-only" htmlFor="port">
-                      Port
-                    </label>
-                    <input
-                      className="input input-solid max-w-full"
-                      placeholder="Port"
-                      type="number"
-                      id="port"
-                      onChange={(e) =>
-                        onChangeParameter("port", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="sr-only" htmlFor="username">
-                      Username
-                    </label>
-                    <input
-                      className="input input-solid max-w-full"
-                      placeholder="Username"
-                      type="text"
-                      id="username"
-                      onChange={(e) =>
-                        onChangeParameter("user", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="sr-only" htmlFor="password">
-                      Password
-                    </label>
-                    <input
-                      className="input input-solid max-w-full"
-                      placeholder="Password"
-                      type="password"
-                      id="password"
-                      onChange={(e) =>
-                        onChangeParameter("pass", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-              </form>
+              
             </div>
             <h3 className="card-header text-white">
               API Gateway Configuration
             </h3>
             <div>
-              <form className="space-y-4">
-                <div className="w-full">
-                  <label className="sr-only" htmlFor="url">
-                    URL
-                  </label>
-                  <input
-                    className="input input-solid max-w-full"
-                    placeholder="URL"
-                    type="text"
-                    id="url"
-                    onChange={(e) => onChangeParameter("url", e.target.value)}
-                  />
-                </div>
-              </form>
+              
             </div>
             <h3 className="card-header text-white">Monitoring Interval</h3>
             <div>
-              <form className="space-y-4">
-                <div className="w-full">
-                  <label className="sr-only" htmlFor="monitoring-interval">
-                    Monitoring Interval
-                  </label>
-                  <input
-                    className="input input-solid max-w-full"
-                    placeholder="Monitoring Interval (seconds)"
-                    type="number"
-                    id="monitoring-interval"
-                    onChange={(e) =>
-                      onChangeParameter("monitoring-interval", e.target.value)
-                    }
-                  />
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="rounded-lg btn btn-primary"
-                    onClick={() => onClickSave()}
-                  >
-                    Save
-                  </button>
-                </div>
-              </form>
+              
             </div>
           </div>
         )}

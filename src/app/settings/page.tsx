@@ -47,6 +47,7 @@ export default function SettingsPage() {
     } else if (key === "monitoring-interval") {
       setting_data.interval = value as number;
     }
+    setSettingData(setting_data)
   };
 
   const onClickSave = () => {
@@ -75,6 +76,7 @@ export default function SettingsPage() {
                     type="text"
                     id="host"
                     onChange={(e) => onChangeParameter("host", e.target.value)}
+                    value={settingData.rabbitmq.host}
                   />
                 </div>
 
@@ -88,41 +90,44 @@ export default function SettingsPage() {
                     type="number"
                     id="port"
                     onChange={(e) => onChangeParameter("port", e.target.value)}
+                    value={settingData.rabbitmq.port}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="sr-only" htmlFor="username">
+                  <label className="sr-only" htmlFor="user">
                     Username
                   </label>
                   <input
                     className="input input-solid max-w-full"
                     placeholder="Username"
                     type="text"
-                    id="username"
+                    id="user"
                     onChange={(e) => onChangeParameter("user", e.target.value)}
+                    value={settingData.rabbitmq.user}
                   />
                 </div>
 
                 <div>
-                  <label className="sr-only" htmlFor="password">
+                  <label className="sr-only" htmlFor="pass">
                     Password
                   </label>
                   <input
                     className="input input-solid max-w-full"
                     placeholder="Password"
                     type="password"
-                    id="password"
+                    id="pass"
                     onChange={(e) => onChangeParameter("pass", e.target.value)}
+                    value={settingData.rabbitmq.pass}
                   />
                 </div>
               </div>
             </form>
           </div>
           <h3 className="card-header text-white">API Gateway Configuration</h3>
-          <div>
+          <div className="mb-4">
             <form className="space-y-4">
               <div className="w-full">
                 <label className="sr-only" htmlFor="url">
@@ -134,6 +139,7 @@ export default function SettingsPage() {
                   type="text"
                   id="url"
                   onChange={(e) => onChangeParameter("url", e.target.value)}
+                  value={settingData.api_url}
                 />
               </div>
             </form>
@@ -153,6 +159,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     onChangeParameter("monitoring-interval", e.target.value)
                   }
+                  value={settingData.interval}
                 />
               </div>
 

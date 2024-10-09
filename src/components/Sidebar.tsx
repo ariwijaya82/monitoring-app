@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ASILogo from "@/asset/asi_wite_logo.png";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const tabList = [
   {
@@ -24,9 +24,11 @@ const tabList = [
 
 export default function Sidebar() {
   const router = useRouter();
+  const pathname = usePathname();
+  console.log(pathname)
 
   type IActiveTab = "services" | "logs" | "settings";
-  const [activeTab, setActiveTab] = useState<IActiveTab>("services");
+  const [activeTab, setActiveTab] = useState<IActiveTab>(pathname.substring(1) as IActiveTab);
 
   const onTabClick = (tab: IActiveTab) => {
     setActiveTab(tab);
